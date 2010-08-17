@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="org.movealong" module="movealong-hibernate" revision="0.0.1"/>
+
+    <configurations>
+        <conf name="compile" description="Libraries that the source code depends on for compilation"/>
+        <conf name="runtime" extends="compile" description="Libraries that are required as dependencies at runtime"/>
+        <conf name="src" description="Source code and documentation for the library"/>
+        <conf name="test" extends="runtime" description="Libraries that are required to compile/run the test suite"/>
+        <conf name="cobertura" description="Cobertura and its dependencies"/>
+    </configurations>
+
+    <publications>
+        <artifact name="movealong-hibernate" type="jar" ext="jar" conf="runtime"/>
+        <artifact name="movealong-hibernate-source" type="source" ext="jar" conf="src"/>
+        <artifact name="movealong-hibernate-doc" type="javadoc" ext="jar" conf="src"/>
+    </publications>
+
+    <dependencies>
+        <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" conf="compile->default"/>
+        <dependency org="com.google.code.guice" name="guice" rev="1.0" conf="compile->default" transitive="false">
+            <artifact name="guice" type="jar"/>
+        </dependency>
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.5.8"/>
+        <dependency org="commons-io" name="commons-io" rev="1.4"/>
+        
+        <dependency org="junit" name="junit" rev="4.8.1" conf="test->default"/>
+        <dependency org="org.jmock" name="jmock" rev="2.5.1" conf="test->default"/>
+        <dependency org="org.jmock" name="jmock-junit4" rev="2.5.1" conf="test->default"/>
+
+        <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura->default"/>
+    </dependencies>
+</ivy-module>

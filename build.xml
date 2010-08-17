@@ -1,0 +1,8 @@
+<project name="movealong-hibernate" default="build-common.dist">
+    <import file="../build-common/build-common.xml"/>
+    <import file="../build-common/build-ivy.xml"/>
+
+    <property name="use.test" value="yes, do it!"/>
+    <property name="use.javadoc" value="yes, do it!"/>
+    <property name="use.cobertura" value="yes, do it!"/>
+</project>
