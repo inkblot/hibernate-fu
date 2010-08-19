@@ -5,17 +5,19 @@
     <info organisation="org.movealong" module="movealong-hibernate" revision="0.0.1"/>
 
     <configurations>
+        <conf name="default" description="Distributed artifacts"/>
         <conf name="compile" description="Libraries that the source code depends on for compilation"/>
         <conf name="runtime" extends="compile" description="Libraries that are required as dependencies at runtime"/>
-        <conf name="src" description="Source code and documentation for the library"/>
+        <conf name="source" description="Source code for the library"/>
+        <conf name="doc" description="Documentation for the library"/>
         <conf name="test" extends="runtime" description="Libraries that are required to compile/run the test suite"/>
         <conf name="cobertura" description="Cobertura and its dependencies"/>
     </configurations>
 
     <publications>
         <artifact name="movealong-hibernate" type="jar" ext="jar" conf="runtime"/>
-        <artifact name="movealong-hibernate-source" type="source" ext="jar" conf="src"/>
-        <artifact name="movealong-hibernate-doc" type="javadoc" ext="jar" conf="src"/>
+        <artifact name="movealong-hibernate-source" type="source" ext="jar" conf="source"/>
+        <artifact name="movealong-hibernate-doc" type="javadoc" ext="jar" conf="doc"/>
     </publications>
 
     <dependencies>
