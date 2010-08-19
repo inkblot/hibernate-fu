@@ -25,7 +25,6 @@
         <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="build-common" level="project" />
   </component>
 </module>
 
