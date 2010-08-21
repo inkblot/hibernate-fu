@@ -2,7 +2,7 @@
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="org.movealong" module="movealong-hibernate" revision="0.0.3"/>
+    <info organisation="org.movealong" module="movealong-hibernate" revision="0.0.4"/>
 
     <configurations>
         <conf name="default" description="Distributed artifacts"/>
@@ -15,13 +15,14 @@
     </configurations>
 
     <publications>
-        <artifact name="movealong-hibernate" type="jar" ext="jar" conf="runtime"/>
+        <artifact name="movealong-hibernate" type="jar" ext="jar" conf="default"/>
         <artifact name="movealong-hibernate-source" type="source" ext="jar" conf="source"/>
         <artifact name="movealong-hibernate-doc" type="javadoc" ext="jar" conf="doc"/>
     </publications>
 
     <dependencies>
         <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" conf="compile->default"/>
+        <dependency org="javax.servlet" name="servlet-api" rev="2.4" conf="compile->default"/>
         <dependency org="com.google.code.guice" name="guice" rev="1.0" conf="compile->default" transitive="false">
             <artifact name="guice" type="jar"/>
         </dependency>
