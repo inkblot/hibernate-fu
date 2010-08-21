@@ -10,18 +10,18 @@ import org.hibernate.SessionFactory;
  * Time: 10:27:56 AM
  */
 public class HibernateFacadeModule extends AbstractModule {
-    private final String propertiesFile;
+    private final String configurationFile;
 
     public HibernateFacadeModule() {
         this(null);
     }
 
-    public HibernateFacadeModule(String propertiesFile) {
-        this.propertiesFile = propertiesFile;
+    public HibernateFacadeModule(String configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     @Override
     protected void configure() {
-        bind(SessionFactory.class).toProvider(new XmlSessionFactoryProvider(propertiesFile));
+        bind(SessionFactory.class).toProvider(new XmlSessionFactoryProvider(configurationFile));
     }
 }
