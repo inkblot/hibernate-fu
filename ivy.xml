@@ -2,7 +2,7 @@
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="org.movealong" module="movealong-hibernate" revision="0.0.6"/>
+    <info organisation="org.movealong" module="movealong-hibernate" revision="0.0.7"/>
 
     <configurations>
         <conf name="default" description="Distributed artifacts"/>
@@ -21,12 +21,13 @@
     </publications>
 
     <dependencies>
-        <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" conf="compile->default"/>
-        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile->default"/>
-        <dependency org="com.google.code.guice" name="guice" rev="1.0" conf="compile->default" transitive="false">
+        <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" conf="runtime->default"/>
+        <dependency org="com.google.code.guice" name="guice" rev="1.0" conf="runtime->default" transitive="false">
             <artifact name="guice" type="jar"/>
         </dependency>
-        
+
+        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile->default"/>
+
         <dependency org="junit" name="junit" rev="4.8.1" conf="test->default"/>
         <dependency org="org.jmock" name="jmock" rev="2.5.1" conf="test->default"/>
         <dependency org="org.jmock" name="jmock-junit4" rev="2.5.1" conf="test->default"/>
