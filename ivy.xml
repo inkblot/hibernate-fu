@@ -11,7 +11,7 @@
         <conf name="source" description="Source code for the library"/>
         <conf name="doc" description="Documentation for the library"/>
         <conf name="test" description="Libraries that are required to compile/run the test suite"/>
-        <conf name="cobertura" description="Cobertura and its dependencies"/>
+        <conf name="build" description="Cobertura and its dependencies"/>
     </configurations>
 
     <publications>
@@ -33,6 +33,6 @@
         <dependency org="org.jmock" name="jmock-junit4" rev="2.5.1" conf="test->default"/>
         <dependency org="org.movealong" name="movealong-commons" rev="0.0.6" conf="test->default"/>
 
-        <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="cobertura->default"/>
+        <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="build->default"/>
     </dependencies>
 </ivy-module>
