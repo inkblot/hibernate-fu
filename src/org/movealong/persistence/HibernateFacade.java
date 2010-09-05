@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.Callable;
 
 /**
@@ -31,7 +32,7 @@ public class HibernateFacade {
      * interface methods according to the specification in that interface's documentation.
      *
      * @param receiver the SessionReceiver that will use the open Session
-     * @param <T> the type of the receiver.receive(Session) return value
+     * @param <T>      the type of the receiver.receive(Session) return value
      * @return the return value of receiver.receive(Session)
      * @throws HibernateException if no open session exists for the calling thread.
      */
@@ -59,25 +60,10 @@ public class HibernateFacade {
      *
      * @param runner a Runnable
      * @return a Runnable that will call runner.run() after opening a Session and properly close it after the
-     * call ends either by returning or throwing an exception.
+     *         call ends either by returning or throwing an exception.
      */
     public Runnable inSession(final Runnable runner) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                Session session = sessionLocal.get();
-                if (session != null) {
-                    throw new SessionExistsException("Called with an existing session");
-                }
-                sessionLocal.set(getSessionFactory().openSession());
-                try {
-                    runner.run();
-                } finally {
-                    sessionLocal.get().close();
-                    sessionLocal.remove();
-                }
-            }
-        };
+        return new RunnableCallable(inSession(new CallableRunnable(runner)));
     }
 
     /**
@@ -86,7 +72,7 @@ public class HibernateFacade {
      *
      * @param call a Callable
      * @return a Callable that will call call.call() after opening a Session and properly close it after the
-     * call ends either by returning or throwing an exception.
+     *         call ends either by returning or throwing an exception.
      */
     public <T> Callable<T> inSession(final Callable<T> call) {
         return new Callable<T>() {
@@ -112,24 +98,24 @@ public class HibernateFacade {
      * with the calling thread, and properly closes the session after the call to run ends.
      *
      * @param runner a Runnable that will have its run method called immediately with a Hibernate session
-     * associated with the thread.
-     * @throws org.hibernate.HibernateException if called in a thread that already has a Session
-     * associated with it.
+     *               associated with the thread.
+     * @throws org.hibernate.HibernateException
+     *          if called in a thread that already has a Session associated with it.
      */
     public void runInSession(final Runnable runner) throws HibernateException {
         inSession(runner).run();
     }
 
     /**
-     * Call's the supplied Callable's call method after opening a Hibernate session and associating it
+     * Calls the call method of the supplied Callable after opening a Hibernate session and associating it
      * with the calling thread, and properly closes the session after the call to run ends.
      *
      * @param call a Runnable that will have its run method called immediately with a Hibernate session
-     * associated with the thread.
+     *             associated with the thread.
      * @return the value returned by call.call()
      * @throws HibernateException if called in a thread that already has a Session
-     * associated with it.
-     * @throws Exception as thrown from call.call()
+     *                            associated with it.
+     * @throws Exception          as thrown from call.call()
      */
     public <T> T callInSession(final Callable<T> call) throws Exception {
         return inSession(call).call();
@@ -141,7 +127,7 @@ public class HibernateFacade {
      * to receiver.receive() ends.
      *
      * @param receiver the receiver that will be provided with the thread's open Session
-     * @param <T> the return type of receiver.receive()
+     * @param <T>      the return type of receiver.receive()
      * @return the value of receiver.receive()
      * @throws HibernateException if called in a thread that has no Session associated with it
      */
@@ -162,7 +148,7 @@ public class HibernateFacade {
      * and postRollback() methods of receiver as specified for {@link TransactionReceiver}.
      *
      * @param receiver the receiver that will be provided with the thread's open Session
-     * @param <T> the return type of receiver.receive()
+     * @param <T>      the return type of receiver.receive()
      * @return the value of receiver.receive()
      * @throws HibernateException if called in a thread that has no Session associated with it
      */
@@ -217,4 +203,39 @@ public class HibernateFacade {
         return sessionFactoryProvider.get();
     }
 
+
+    private static class CallableRunnable implements Callable<Void> {
+        private final Runnable runner;
+
+        public CallableRunnable(Runnable runner) {
+            this.runner = runner;
+        }
+
+        @Override
+        public Void call() {
+            runner.run();
+            return null;
+        }
+    }
+
+    private static class RunnableCallable implements Runnable {
+        private final Callable<Void> call;
+
+        public RunnableCallable(Callable<Void> call) {
+            this.call = call;
+        }
+
+        @Override
+        public void run() {
+            try {
+                call.call();
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Error e) {
+                throw e;
+            } catch (Exception e) {
+                throw new UndeclaredThrowableException(e);
+            }
+        }
+    }
 }
