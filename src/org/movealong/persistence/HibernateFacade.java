@@ -1,3 +1,22 @@
+/*
+ * (c) Copyright 2010 Nate Riffe <inkblot@movealong.org>
+ *
+ * This file is part of movealong-hibernate.
+ *
+ * movealong-hibernate is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * movealong-hibernate is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public
+ * License along with movealong-hibernate.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
 package org.movealong.persistence;
 
 import com.google.inject.Inject;
@@ -37,12 +56,8 @@ public class HibernateFacade {
      * @throws HibernateException if no open session exists for the calling thread.
      */
     public <T> T usingSession(SessionReceiver<T> receiver) throws HibernateException {
-        Session session = sessionLocal.get();
-        if (session == null) {
-            throw new NoSessionException("usingSession(..) must be called under a higher call to inSession.");
-        }
         try {
-            return receiver.receive(session);
+            return receiver.receive(getSession());
         } catch (HibernateFacadeException e) {
             // HibernateFacadeExceptions are thrown higher up the call stack
             // when another call to the facade singleton generates an error
@@ -52,6 +67,20 @@ public class HibernateFacade {
         } catch (Exception e) {
             throw receiver.translateException(e);
         }
+    }
+
+    /**
+     * Accesses the {@link Session} associated with the current call stack.
+     * @return the {@link Session} associated with the current call stack.
+     * @throws HibernateException if there is no session associate with the current call stack.
+     */
+    public Session getSession() {
+        Session session = sessionLocal.get();
+        if (session == null) {
+            throw new NoSessionException("There is no session associated with the current call stack." +
+                    "  Sessions are managed by a call to inSession at a point higher on the call stack.");
+        }
+        return session;
     }
 
     /**
@@ -67,7 +96,7 @@ public class HibernateFacade {
     }
 
     /**
-     * Creates a Callable whose run method will properly open and close a {@link Session} around a call to
+     * Creates a Callable whose call method will properly open and close a {@link Session} around a call to
      * the supplied call's call method.
      *
      * @param call a Callable
@@ -78,23 +107,26 @@ public class HibernateFacade {
         return new Callable<T>() {
             @Override
             public T call() throws Exception {
-                Session session = sessionLocal.get();
-                if (session != null) {
+                Session session;
+                try {
+                    getSession();
                     throw new SessionExistsException("Called with an existing session");
+                } catch (NoSessionException e) {
+                    session = getSessionFactory().openSession();
                 }
-                sessionLocal.set(getSessionFactory().openSession());
+                sessionLocal.set(session);
                 try {
                     return call.call();
                 } finally {
-                    sessionLocal.get().close();
                     sessionLocal.remove();
+                    session.close();
                 }
             }
         };
     }
 
     /**
-     * Call's the supplied Runnable's run method after opening a Hibernate session and associating it
+     * Calls the supplied Runnable's run method after opening a Hibernate session and associating it
      * with the calling thread, and properly closes the session after the call to run ends.
      *
      * @param runner a Runnable that will have its run method called immediately with a Hibernate session
@@ -108,7 +140,7 @@ public class HibernateFacade {
 
     /**
      * Calls the call method of the supplied Callable after opening a Hibernate session and associating it
-     * with the calling thread, and properly closes the session after the call to run ends.
+     * with the calling thread, and properly closes the session after the call to call ends.
      *
      * @param call a Runnable that will have its run method called immediately with a Hibernate session
      *             associated with the thread.
