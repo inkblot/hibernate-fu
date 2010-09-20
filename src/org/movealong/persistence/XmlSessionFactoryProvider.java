@@ -35,20 +35,20 @@ public class XmlSessionFactoryProvider implements Provider<SessionFactory> {
     /**
      * The default configuration file name, used when another is not specified using the constructor.
      */
-    public final String DEFAULT_CONFIGURATION_FILE = "/hibernate.cfg.xml";
+    public static final String DEFAULT_CONFIGURATION_FILE = "/hibernate.cfg.xml";
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final String configurationFile;
+    private final String[] configurationFiles;
     private SessionFactory sessionFactory;
 
     public XmlSessionFactoryProvider() {
-        this(null);
+        this((String[]) null);
     }
 
-    public XmlSessionFactoryProvider(String configurationFile) {
-        this.configurationFile = configurationFile == null
-                ? DEFAULT_CONFIGURATION_FILE
-                : configurationFile;
+    public XmlSessionFactoryProvider(String... configurationFiles) {
+        this.configurationFiles = configurationFiles == null
+                ? new String[] { DEFAULT_CONFIGURATION_FILE }
+                : configurationFiles;
     }
 
     @Override
@@ -72,8 +72,10 @@ public class XmlSessionFactoryProvider implements Provider<SessionFactory> {
     }
 
     private SessionFactory createSessionFactory() {
-        return new AnnotationConfiguration()
-                .configure(configurationFile)
-                .buildSessionFactory();
+        AnnotationConfiguration configuration = new AnnotationConfiguration();
+        for (String configurationFile : configurationFiles) {
+            configuration.configure(configurationFile);
+        }
+        return configuration.buildSessionFactory();
     }
 }

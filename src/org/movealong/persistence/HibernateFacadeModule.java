@@ -27,18 +27,18 @@ import org.hibernate.SessionFactory;
  * configuration file.
  */
 public class HibernateFacadeModule extends AbstractModule {
-    private final String configurationFile;
+    private final String[] configurationFiles;
 
     public HibernateFacadeModule() {
-        this(null);
+        this((String[]) null);
     }
 
-    public HibernateFacadeModule(String configurationFile) {
-        this.configurationFile = configurationFile;
+    public HibernateFacadeModule(String... configurationFiles) {
+        this.configurationFiles = configurationFiles;
     }
 
     @Override
     protected void configure() {
-        bind(SessionFactory.class).toProvider(new XmlSessionFactoryProvider(configurationFile));
+        bind(SessionFactory.class).toProvider(new XmlSessionFactoryProvider(configurationFiles));
     }
 }
