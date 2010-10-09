@@ -46,15 +46,10 @@ import java.lang.reflect.UndeclaredThrowableException;
 public class HibernateFacadeFilter implements Filter {
 
     @Inject
-    private HibernateFacade hibernate;
+    public static HibernateFacade hibernate;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        Injector injector = (Injector) filterConfig.getServletContext().getAttribute("injector");
-        if (injector == null) {
-            throw new ServletException("Servlet attribute not bound to a Guice injector: injector");
-        }
-        injector.injectMembers(this);
     }
 
     @Override
@@ -85,7 +80,6 @@ public class HibernateFacadeFilter implements Filter {
 
     @Override
     public void destroy() {
-        hibernate = null;
     }
 
 }

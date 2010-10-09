@@ -19,10 +19,15 @@
  */
 package org.movealong.persistence;
 
+import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -31,6 +36,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * named in the constructor.  In lieu of naming a configuration file, the provider uses the default name
  * <code>/hibernate.cfg.xml</code>.
  */
+@Singleton
 public class XmlSessionFactoryProvider implements Provider<SessionFactory> {
     /**
      * The default configuration file name, used when another is not specified using the constructor.
@@ -38,17 +44,14 @@ public class XmlSessionFactoryProvider implements Provider<SessionFactory> {
     public static final String DEFAULT_CONFIGURATION_FILE = "/hibernate.cfg.xml";
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
-    private final String[] configurationFiles;
+    private final Set<String> configurationFiles;
     private SessionFactory sessionFactory;
 
-    public XmlSessionFactoryProvider() {
-        this((String[]) null);
-    }
-
-    public XmlSessionFactoryProvider(String... configurationFiles) {
+    @Inject
+    public XmlSessionFactoryProvider(@Named(DEFAULT_CONFIGURATION_FILE) Set<String> configurationFiles) {
         this.configurationFiles = configurationFiles == null
-                ? new String[] { DEFAULT_CONFIGURATION_FILE }
-                : configurationFiles;
+                ? Collections.singleton(DEFAULT_CONFIGURATION_FILE)
+                : Collections.unmodifiableSet(configurationFiles);
     }
 
     @Override

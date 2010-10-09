@@ -2,7 +2,7 @@
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="org.movealong" module="movealong-hibernate" revision="0.1.2"/>
+    <info organisation="org.movealong" module="movealong-hibernate" revision="0.2.0"/>
 
     <configurations>
         <conf name="default" extends="runtime" description="Distributed artifacts"/>
@@ -24,16 +24,15 @@
 
     <dependencies>
         <dependency org="org.hibernate" name="hibernate-annotations" rev="3.4.0.GA" conf="runtime->default"/>
-        <dependency org="com.google.inject" name="guice" rev="2.0" conf="runtime->default">
-            <artifact name="guice" type="jar"/>
-        </dependency>
+        <dependency org="com.google.inject" name="guice" rev="2.0" conf="runtime->default"/>
+        <dependency org="com.google.inject.extensions" name="guice-multibindings" rev="2.0" conf="runtime->default"/>
 
         <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="compile->default"/>
 
         <dependency org="junit" name="junit" rev="4.8.1" conf="test->default"/>
         <dependency org="org.jmock" name="jmock" rev="2.5.1" conf="test->default"/>
         <dependency org="org.jmock" name="jmock-junit4" rev="2.5.1" conf="test->default"/>
-        <dependency org="org.movealong" name="movealong-commons" rev="0.0.9" conf="test->default;sources->sources"/>
+        <dependency org="org.movealong" name="movealong-commons" rev="0.1.1" conf="test->default;sources->sources"/>
 
         <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="build->default"/>
     </dependencies>

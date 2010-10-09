@@ -20,25 +20,25 @@
 package org.movealong.persistence;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
+import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import org.hibernate.SessionFactory;
+import org.movealong.persistence.servlet.HibernateFacadeFilter;
 
 /**
  * Creates Guice bindings for a HibernateFacade using a Hibernate SessionFactory configured using the named XML
  * configuration file.
  */
 public class HibernateFacadeModule extends AbstractModule {
-    private final String[] configurationFiles;
-
-    public HibernateFacadeModule() {
-        this((String[]) null);
-    }
-
-    public HibernateFacadeModule(String... configurationFiles) {
-        this.configurationFiles = configurationFiles;
-    }
-
     @Override
     protected void configure() {
-        bind(SessionFactory.class).toProvider(new XmlSessionFactoryProvider(configurationFiles));
+        bind(SessionFactory.class).toProvider(XmlSessionFactoryProvider.class);
+        requestStaticInjection(HibernateFacadeFilter.class);
+    }
+
+    public static void addXmlConfigurationResource(Binder binder, String configurationFile) {
+        Multibinder.newSetBinder(binder, String.class, Names.named(XmlSessionFactoryProvider.DEFAULT_CONFIGURATION_FILE))
+                .addBinding().toInstance(configurationFile);
     }
 }
