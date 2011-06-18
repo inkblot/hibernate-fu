@@ -1,7 +1,3 @@
 <project name="movealong-hibernate" default="build-common.dist">
-    <property name="use.test" value="yes, do it!"/>
-    <property name="use.javadoc" value="yes, do it!"/>
-    <property name="use.coverage" value="yes, do it!"/>
-
     <import file="../build-common/build-common.xml"/>
 </project>
