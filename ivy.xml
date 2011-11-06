@@ -2,7 +2,7 @@
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
-    <info organisation="org.movealong" module="movealong-hibernate" revision="0.2.4"/>
+    <info organisation="org.movealong" module="hibernate-fu" revision="0.2.4"/>
 
     <configurations>
         <conf name="default" extends="runtime" description="Distributed artifacts"/>
@@ -15,11 +15,11 @@
     </configurations>
 
     <publications>
-        <artifact name="movealong-hibernate" type="jar" ext="jar" conf="default"/>
-        <artifact name="movealong-hibernate-source" type="source" ext="jar" conf="sources"/>
-        <artifact name="movealong-hibernate-doc" type="javadoc" ext="jar" conf="javadoc"/>
-        <artifact name="movealong-hibernate-src" ext="tar.gz" conf="build"/>
-        <artifact name="movealong-hibernate-src" ext="zip" conf="build"/>
+        <artifact name="hibernate-fu" type="jar" ext="jar" conf="default"/>
+        <artifact name="hibernate-fu-source" type="source" ext="jar" conf="sources"/>
+        <artifact name="hibernate-fu-doc" type="javadoc" ext="jar" conf="javadoc"/>
+        <artifact name="hibernate-fu-src" ext="tar.gz" conf="build"/>
+        <artifact name="hibernate-fu-src" ext="zip" conf="build"/>
     </publications>
 
     <dependencies>
