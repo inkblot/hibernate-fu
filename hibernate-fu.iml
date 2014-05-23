@@ -22,7 +22,10 @@
           <root url="file://$MODULE_DIR$/resources" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../junit-fu/src" />
+          <root url="file://$MODULE_DIR$/../junit-fu/test" />
+        </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/lib/compile" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/lib/runtime" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
